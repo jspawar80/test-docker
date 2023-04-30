@@ -137,5 +137,91 @@ This will start the container and map port 3000 from the container to port 3000 
 
 That's it! You've now created a Node.js application with a Dockerfile and run it in a Docker container.
 
+---------------------------
+#azure AKS runner
 
+To set up self-hosted auto-scaling GitHub Runners on Azure Kubernetes Service (AKS), you can follow these steps:
+
+1. Create an Azure Kubernetes Service (AKS) cluster:
+
+If you don't have an AKS cluster, create one using the Azure Portal, Azure CLI, or Terraform. For example, using Azure CLI:
+
+```
+az login
+az group create --name myResourceGroup --location eastus
+az aks create --resource-group myResourceGroup --name myAKSCluster --node-count 1 --generate-ssh-keys
+az aks get-credentials --resource-group myResourceGroup --name myAKSCluster
+```
+
+2 .Install kubectl and Helm:
+
+Ensure you have both kubectl and helm installed on your local machine. You can install them using package managers like Homebrew, Chocolatey, or apt.
+
+3 .Create a GitHub personal access token:
+
+Create a personal access token on GitHub with the repo, admin:org, and admin:repo_hook scopes. Save the token, as you'll need it later.
+
+4. Deploy the GitHub Runner using Helm:
+
+Add the Helm repository for the GitHub Actions Runner:
+
+```
+helm repo add actions-runner-controller https://actions-runner-controller.github.io/actions-runner-controller
+helm repo update
+```
+Create a values.yaml file for your Helm deployment with the following content:
+
+```
+controllerManager:
+  env:
+    - name: GITHUB_TOKEN
+      value: "<your_github_token>"
+
+runners:
+  repository: <your_github_repository>
+  minReplicas: 1
+  maxReplicas: 4
+  resources:
+    limits:
+      cpu: "2"
+      memory: "4Gi"
+    requests:
+      cpu: "1"
+      memory: "2Gi"
+```
+Replace <your_github_token> with your GitHub personal access token and <your_github_repository> with the repository where the runners will be used.
+
+Deploy the GitHub Runner using Helm:
+
+```
+helm install --namespace actions-runner-system --create-namespace github-runner actions-runner-controller/actions-runner-controller -f values.yaml
+```
+5. Configure GitHub Runner autoscaling:
+
+The runner will auto-scale based on the provided minReplicas and maxReplicas values in the values.yaml file.
+
+Test the GitHub Runner:
+
+6. Create a GitHub Actions workflow in your repository with the following content:
+
+```
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: self-hosted
+
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v2
+
+    - name: Run a one-line script
+      run: echo "Hello, world!"
+```
+
+Commit and push the workflow to your repository. The self-hosted runner should pick up the job and execute it. You can view the progress in the "Actions" tab of your GitHub repository.
+
+The ephemeral GitHub Runners should now be set up and will auto-scale based on the workload, up to 4 nodes.
 

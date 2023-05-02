@@ -26,7 +26,7 @@ jobs:
           tags: jspawar80/test-docker:${{ github.sha }}
           
       - name: Deploy to Docker
-        uses: appleboy/ssh-action@v0.4.0
+        uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}

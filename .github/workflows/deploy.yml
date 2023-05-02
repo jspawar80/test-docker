@@ -31,9 +31,8 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{secrets.SSH_KEY}}
-           script: |
-            cd test/
+          script: |
+            cd /path/to/project
             docker-compose down
             docker-compose pull
             docker-compose up -d
-

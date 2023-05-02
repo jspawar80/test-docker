@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: jspawar80/test-docker:latest
+          tags: jspawar80/test-docker:${{ github.sha }}
           
       - name: Deploy to Docker
         uses: appleboy/ssh-action@v0.1.2

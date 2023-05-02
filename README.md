@@ -55,7 +55,7 @@ jobs:
 This workflow will build and push a Docker image to Docker Hub on every push to the main branch. It will then deploy the latest image to the deployment server using docker-compose. If the container already exists, it will be redeployed with the pull policy set to "always".
 
 
-#Docker-compose.yaml
+# Docker-compose.yaml
 
 ```
 version: '3.8'

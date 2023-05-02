@@ -30,8 +30,7 @@ jobs:
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
-          passphrase: ${{ secrets.DEPLOY_PASSPHRASE }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }} 
           script: |
             cd /path/to/project
             docker-compose down

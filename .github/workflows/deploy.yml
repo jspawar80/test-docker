@@ -33,7 +33,6 @@ jobs:
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }} 
           passphrase: ${{ secrets.DEPLOY_PASSPHRASE }}
           script: |
-            cd test
             docker-compose down
             docker-compose pull
             docker-compose up -d

@@ -42,7 +42,7 @@ jobs:
               git checkout $CURRENT_BRANCH
               git pull
             else
-              git clone https://github.com/jspawar80/"$DIRECTORY_NAME".git
+              git clone git@github.com:jspawar80/"$DIRECTORY_NAME".git
               cd "$DIRECTORY_NAME"
               git checkout $CURRENT_BRANCH
             fi

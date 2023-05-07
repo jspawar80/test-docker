@@ -23,7 +23,7 @@ jobs:
         with:
           context: .
           push: true
-          tags: jspawar80/test-docker:${{ github.sha }}
+          tags: ${{ secrets.DOCKER_USERNAME }}/test-docker:latest
 
       - name: Deploy to Docker
         uses: appleboy/ssh-action@v0.1.2
@@ -31,8 +31,23 @@ jobs:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
+          passphrase: ${{ secrets.DEPLOY_PASSPHRASE }}
           script: |
-            cd test
+            CURRENT_BRANCH="${{ github.ref }}"
+            CURRENT_BRANCH=${CURRENT_BRANCH#refs/heads/}
+            
+            eval $(ssh-agent -s)
+            ssh-add <(echo "${{ secrets.DEPLOY_PRIVATE_KEY }}")
+
+            if [ -d "$DIRECTORY_NAME" ]; then
+              cd "$DIRECTORY_NAME"
+              git checkout $CURRENT_BRANCH
+              git pull
+            else
+              git clone https://github.com/jspawar80/"$DIRECTORY_NAME".git
+              cd "$DIRECTORY_NAME"
+              git checkout $CURRENT_BRANCH
+            fi
             docker-compose down
             docker-compose pull
             docker-compose up -d

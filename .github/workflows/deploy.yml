@@ -37,13 +37,13 @@ jobs:
             CURRENT_BRANCH="${{ github.ref }}"
             CURRENT_BRANCH=${CURRENT_BRANCH#refs/heads/}
 
-            if [ -d "$REPOSITORY_NAME" ]; then
-              cd "$REPOSITORY_NAME"
+            if [ -d "test-docker" ]; then
+              cd "test-docker"
               git checkout $CURRENT_BRANCH
               git pull
             else
-              git clone https://github.com/jspawar80/"$REPOSITORY_NAME".git
-              cd "$REPOSITORY_NAME"
+              git clone https://github.com/jspawar80/"test-docker".git
+              cd "test-docker"
               git checkout $CURRENT_BRANCH
             fi
             docker-compose down

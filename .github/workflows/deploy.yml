@@ -32,6 +32,7 @@ jobs:
           username: ${{ secrets.DEPLOY_USER }}
           key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           passphrase: ${{ secrets.DEPLOY_PASSPHRASE }}
+          known_hosts: ${{ secrets.SSH.KNOWN.HOSTS }}
           script: |
             CURRENT_BRANCH="${{ github.ref }}"
             CURRENT_BRANCH=${CURRENT_BRANCH#refs/heads/}

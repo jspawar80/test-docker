@@ -23,14 +23,14 @@ jobs:
         with:
           context: .
           push: true
-          tags: jspawar80/test-docker:${{ github.sha }}
+          tags: username/repo:${{ github.sha }}
 
       - name: Deploy to Docker
         uses: appleboy/ssh-action@v0.1.2
         with:
           host: ${{ secrets.DEPLOY_HOST }}
           username: ${{ secrets.DEPLOY_USER }}
-          password: ${{ secrets.DEPLOY_PASSWORD }}
+          key: ${{ secrets.DEPLOY_PRIVATE_KEY }}
           script: |
             cd test
             docker-compose down

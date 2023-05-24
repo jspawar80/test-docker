@@ -1,6 +1,6 @@
 ## Preriqisites  ( This document refered for ubuntu linux only )
 
-This Github Action pipeline setups and deploys the NodeJs app with PM2 and also setups the nginx configuration for the given domain.
+This Github Action pipeline setups and deploys the NodeJs app with Docker.
 
 * Install NodeJs, NPM, Docker, Docker-compose, Nginx
 * Make sure you point the IP to correct domain/subdomain
@@ -82,7 +82,7 @@ jobs:
             docker-compose up -d
 ```
 
-### 3. Setup Action secrets in Github Repo
+### 2. Setup Action secrets in Github Repo
 
 * `DOCKER_USERNAME` >> Username of Docker Account
 * `DOCKER_PASSWORD` >> Password of Docker Account
@@ -105,6 +105,46 @@ branches: [ dev, new-prod, "branch-name" ]
 * Port mapping: The deployment script sets the appropriate port number based on the branch name. Modify the port assignments in the script section of the "Deploy to Docker" step if needed.
 * Repository name: Update the REPOSITORY_NAME secret with the name of your GitHub repository in the deployment script.
 * Docker Compose customization: The deployment script uses a docker-compose-template.yml file as a template and modifies it to create the docker-compose.yml file. Customize the template file according to your Docker Compose configuration needs.
+
+### 3. create a file name 'Dockerfile'
+```
+# Use the official Node.js 16 image as the base image
+FROM node:16-alpine
+
+# Set the working directory to /app
+WORKDIR /usr/src/app
+
+# Copy the package.json and package-lock.json files to /app
+COPY package*.json ./
+
+# Install the dependencies
+RUN npm install
+
+# Copy the rest of the application code to /app
+COPY . .
+
+# Expose port 3000 to the outside world
+EXPOSE 3000
+
+# Start the application
+CMD [ "node", "index.js" ]
+```
+
+### 4. create a file name 'docker-compose-template.yml'
+
+```
+version: '3.8'
+
+services:
+  imagename-branchname:
+    image: username/imagename:branchname
+    restart: always
+    ports:
+      - "portnumber:3007"
+    environment:
+      -  NODE_ENV=development
+      #- NODE_ENV=production
+```
 
 ### 3. Change the port in nginx config for domain
 ```
